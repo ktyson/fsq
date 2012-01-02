@@ -1,0 +1,27 @@
+The objective is a file system viewer/queryer that runs locally on Node.js
+
+Same code should run on Win and Mac machines
+
+Using html5 should make web client far surpass other options in visual and ease-of-use for most uses
+
+Initial objectives:
+
+1. Navigate intuitively
+2. See clean but customizable lists or icons or combo
+3. Show type, size and age graphically
+4. Allow user to create/persist positional clustering (as per desktops)
+
+Further possibilities:
+
+1. Act on files (open, move, etc.)
+2. Preview contents
+3. Advanced search, etc.
+4. Tree views, two-panel views, etc. (But, usability first - often trees are balky)
+
+Basics:
+
+Node.js displays a blank web page at localhost
+User selects a folder to target
+Ajax gets a json collection of data
+Client creates the visual display
+
