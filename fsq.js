@@ -70,7 +70,7 @@ function getContent(urlObj, res){
 		c.push('<script type="text/javascript" src="fsq/fsqClient.js"></script>');
 		c.push('<link rel="stylesheet" type="text/css" href="fsq/fsqStyle.css" />');
 		c.push('</head><body>');
-		c.push('</body></head>');
+		c.push('</body></html>');
 		
 		res.writeHead(200, {'Content-Type': 'text/html'}); 
 		res.end(c.join('\n'));
