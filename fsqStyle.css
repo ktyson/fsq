@@ -3,11 +3,22 @@ body{
 
 }
 
-ul{
+ol{
 	list-style-type: none;
 	list-style-image: none;
 }
 
 li{
+	
+}
+
+.fsqFile{
+		
+}
+
+.fsqDir{
+	font-style: italic;
+	font-weight: bold;
+	color: #B22222;
 	cursor: pointer;
 }

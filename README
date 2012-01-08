@@ -34,5 +34,36 @@ Further possibilities:
 3. Advanced search, etc.
 4. Tree views, two-panel views, etc. (But, usability first - often trees are balky)
 
-
+mainObject:
+{
+folder: "/"
+numFiles: 33
+files: [
+	{
+	name: "myFile"
+	isFile: false
+	isDirectory: false	
+	isBlockDevice: false
+	isCharacterDevice: false	
+	stats: [
+		size: 0
+		
+		atime: "2011-12-22T17:53:53.000Z"
+		ctime: "2011-12-22T17:53:53.000Z"
+		mtime: "2011-12-22T17:53:53.000Z"
+		
+		blksize: 4096
+		blocks: 0
+		
+		dev: 234881026
+		gid: 80
+		ino: 23467386
+		mode: 49663
+		nlink: 1
+		rdev: 0
+		uid: 0	
+		]	
+	}, ...
+	]
+}
 
