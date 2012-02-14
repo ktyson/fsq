@@ -22,3 +22,12 @@ li{
 	color: #B22222;
 	cursor: pointer;
 }
+
+.label{
+background-color: yellow;
+}
+
+.file{
+position: fixed;
+cursor:hand;
+}

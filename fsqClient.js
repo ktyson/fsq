@@ -10,6 +10,7 @@ $(document).ready(function(){
 
 	$("#go").live("click",function(){
 		
+		$("#results").html('');
 		var lookatFolder = $("#lookat").val();
 		if(lookatFolder.length){
 			$.ajax({
@@ -18,14 +19,22 @@ $(document).ready(function(){
 				data: "folder=" + lookatFolder,
 				success: function(folderObj){
 					//console.log(folderObj);
+					
 					currentFolder = folderObj;
-					setFontSize();
-					setOpacity();
-					listFiles();	
 					
+					if($("#viewMode").val()=="Text"){					
+						setFontSize();
+						setOpacity();
+						listFiles();					
+						$('ol').makeacolumnlists({cols:4,colWidth:0,equalHeight:false,startN:1});
 					
-					$('ol').makeacolumnlists({cols:4,colWidth:0,equalHeight:false,startN:1});
+					}else if($("#viewMode").val()=="Game"){	
 					
+						setOpacity();
+						setDiameter();
+						makeFeatures();
+					
+					}
 				}
 			});
 		}else{
@@ -48,6 +57,85 @@ $(document).ready(function(){
 	
 	});
 });
+
+
+function makeFeatures(){
+	
+	var c = [];	
+
+	//create container divs
+	$.each(currentFolder.files,function(idx, file){
+		c.push("<div id='b_"+idx+"' class='file'>");
+		c.push("</div>");
+		$("#results").append(c.join(''));
+	});
+	
+	var currSide = 100;
+	var currLeft = 0;
+	var currTop = 130;
+	
+	//add background and icons
+	$.each(currentFolder.files,function(idx, file){
+		
+		
+		//find the div
+		var divB = $("#b_"+idx);	
+		
+		
+		//standard sizing and set into grid
+		var leftB = currLeft + ((idx % 10) * 100)+"px";
+		var topB = currTop + (Math.floor(idx / 10) * 100)+"px";
+		var sideB = currSide+"px";
+		$(divB).css("width",sideB);
+		$(divB).css("height",sideB);
+		$(divB).css("top",topB);
+		$(divB).css("left",leftB);
+		
+		//background
+		$(divB).css("background","rgba(0, 140, 0, .3)");
+
+		//svg
+		var pct = (file.diameter ? file.diameter : 0.1);
+		var circum = Math.ceil(currSide * pct/2); //circum based on size
+		var fillColor = "red"; //based on ext
+		var opacity = 1.0; //based on age
+		var rectOffset = Math.ceil(currSide/2) - circum;
+		var rectSide = circum*2;
+		
+		c = [];		
+		c.push("<svg xmlns='http://www.w3.org/2000/svg' version='1.1'>");
+		
+		if(file.isDirectory){
+			c.push("<circle cx='50' cy='50' r='" + circum + "' stroke='black'");
+			c.push("stroke-width='2' fill='red' opacity='0.9'/>");
+		}else{
+			c.push('<rect x="'+rectOffset+'" y="'+rectOffset+'" width="'+rectSide+'" height="'+rectSide+'"');
+			c.push(' style="fill: blue; stroke: black; stroke-width: 2;"/>');
+		
+		}
+		
+		
+		c.push("</svg>");		
+		$(divB).append(c.join(''));
+		
+		
+		//functionality
+		$(divB).draggable({ snap: true, snapTolerance: 100 });		
+		$(divB).hover(
+			function () {
+				$(this).append($("<span class='label'>" + file.name + "</span>"));
+			}, 
+			function () {
+				$(this).find("span:last").remove();
+			}
+		);
+
+
+	});		
+
+	
+
+}
 
 function listFiles(){
 
@@ -88,6 +176,10 @@ function createStructure(){
 	var c = [];
 	
 	c.push('<h3>fsq File System Viewer (Beta)</h3>');
+	c.push('<div><select id="viewMode">');
+	c.push('<option value="Text" selected="selected">Text</option>');
+	c.push('<option value="Game">Game</option>');
+	c.push('</select></div>');
 	c.push('<div><input id="lookat" value="/" size="160"></input><br/>');
 	c.push('<input id="go" value = "Go" type="button"></input>');
 	c.push('<input id="chop" value = "Chop" type="button"></input></div>');
@@ -176,6 +268,41 @@ function setFontSize(){
 			}		
 		});
 		
+		return size;
+
+	}	
+
+}
+
+function setDiameter(){
+
+	var xTiles = [
+		[10,0.1],
+		[100,0.2],
+		[1000,0.3],
+		[10000,0.4],
+		[100000,0.5],
+		[1000000,0.6],
+		[10000000,0.7],
+		[100000000,0.8]
+	];
+
+	$.each(currentFolder.files, function(idx, file){
+		if(file.isFile){
+			file.diameter = getDiameter(file.stats.size);
+		}
+	});
+	
+	function getDiameter(size){
+		var size;
+		$.each(xTiles, function(idx, val){	
+
+			if (size < val[0]){
+				size = val[1];
+				return false;
+			}		
+		});
+
 		return size;
 
 	}	

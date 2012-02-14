@@ -66,7 +66,8 @@ function getContent(urlObj, res){
 		//return basic website
 		var c = [];
 		c.push('<html><head>');
-		c.push('<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>');
+		c.push('<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>');		
+		c.push('<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>');		
 		c.push('<script type="text/javascript" src="fsq/fsqClient.js"></script>');
 		c.push('<link rel="stylesheet" type="text/css" href="fsq/fsqStyle.css" />');
 		c.push('</head><body>');
