@@ -27,11 +27,7 @@ li{
 background-color: yellow;
 }
 
-.features{
+.file{
 position: fixed;
 cursor:hand;
-}
-
-.sig{
-display:none;
 }
