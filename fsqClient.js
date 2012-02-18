@@ -10,6 +10,13 @@ $(document).ready(function(){
 
 	$("#go").live("click",function(){
 		
+		
+		//before leaving, gather the game
+		if($("#viewMode").val()=="Game"){
+			gatherGame();
+		
+		}
+		
 		$("#results").html('');
 		var lookatFolder = $("#lookat").val();
 		if(lookatFolder.length){
@@ -29,7 +36,7 @@ $(document).ready(function(){
 						$('ol').makeacolumnlists({cols:4,colWidth:0,equalHeight:false,startN:1});
 					
 					}else if($("#viewMode").val()=="Game"){	
-					
+						
 						setOpacity();
 						setDiameter();
 						makeFeatures();
@@ -49,14 +56,21 @@ $(document).ready(function(){
 		var idx = $(this).attr("id").substring(5);
 		var f = currentFolder.files[idx];
 		
-		if(f.isDirectory){
-			var isNow = $("#lookat").val();	
-			var slash = (isNow == '/' ? '' : '/');
-			$("#lookat").val(isNow + slash + f.name);
-		}
+		setLookat(f);
 	
 	});
 });
+
+
+function setLookat(file){
+
+	if(file.isDirectory){
+		var isNow = $("#lookat").val();	
+		var slash = (isNow == '/' ? '' : '/');
+		$("#lookat").val(isNow + slash + file.name);
+	}
+
+}
 
 
 function makeFeatures(){
@@ -65,7 +79,8 @@ function makeFeatures(){
 
 	//create container divs
 	$.each(currentFolder.files,function(idx, file){
-		c.push("<div id='b_"+idx+"' class='file'>");
+		c.push("<div id='f_"+idx+"' class='features'>");
+		c.push("<span class='sig'>" + currentFolder.name + "</span>");
 		c.push("</div>");
 		$("#results").append(c.join(''));
 	});
@@ -79,7 +94,7 @@ function makeFeatures(){
 		
 		
 		//find the div
-		var divB = $("#b_"+idx);	
+		var divB = $("#f_"+idx);	
 		
 		
 		//standard sizing and set into grid
@@ -129,11 +144,45 @@ function makeFeatures(){
 				$(this).find("span:last").remove();
 			}
 		);
+		$(divB).click(function(){
+		
+			var idx = $(this).attr("id").substring(2);
+			var f = currentFolder.files[idx];
+			setLookat(f);
+			
+		});
 
 
 	});		
 
 	
+
+}
+
+
+
+function gatherGame(){
+
+if(currentFolder){
+	//only look at the game piece divs
+	var baseSig = {};
+	baseSig.sig = currentFolder.folder;
+	
+	var sigs=[];
+	alert($(".features").length);
+	$.each($(".features"),function(idx, file){
+		var sig={};
+		sig.sig=$(file).find(".sig").text();
+	/*	sig.x=$(file).attr("left");
+		sig.y=$(file).attr("top");
+		sigs.push(sig);	*/
+	});
+	
+	baseSig.sigs = sigs;
+	
+	console.log(JSON.stringify(baseSig));
+}	
+
 
 }
 
@@ -177,8 +226,8 @@ function createStructure(){
 	
 	c.push('<h3>fsq File System Viewer (Beta)</h3>');
 	c.push('<div><select id="viewMode">');
-	c.push('<option value="Text" selected="selected">Text</option>');
-	c.push('<option value="Game">Game</option>');
+	c.push('<option value="Text">Text</option>');
+	c.push('<option value="Game" selected="selected">Game</option>');
 	c.push('</select></div>');
 	c.push('<div><input id="lookat" value="/" size="160"></input><br/>');
 	c.push('<input id="go" value = "Go" type="button"></input>');
@@ -308,6 +357,7 @@ function setDiameter(){
 	}	
 
 }
+
 
 
 
