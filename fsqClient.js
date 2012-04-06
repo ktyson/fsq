@@ -41,6 +41,20 @@ $(document).ready(function(){
 			alert("enter folder");
 		}
 		
+
+
+    DNode({
+        name : function (f) { f('Mr. Spock') }
+    }).connect(function (remote) {
+        remote.timesTen(10, function (n) {
+            document.getElementById("result").innerHTML = String(n);
+        });
+        remote.whoAmI(function (name) {
+            document.getElementById("name").innerHTML = name;
+        });
+    });
+
+
 	
 	});
 	

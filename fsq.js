@@ -1,8 +1,8 @@
 var http = require('http');  
 var fs = require('fs');
+var DNode = require('dnode');
 
-
-http.createServer(function (req, res) {
+var httpServer = http.createServer(function (req, res) {
 
 	var url = require('url').parse(req.url, true);
 	
@@ -67,7 +67,8 @@ function getContent(urlObj, res){
 		var c = [];
 		c.push('<html><head>');
 		c.push('<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>');		
-		c.push('<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>');		
+		c.push('<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>');	
+		c.push('<script type="text/javascript" src="/dnode.js"></script>');
 		c.push('<script type="text/javascript" src="fsq/fsqClient.js"></script>');
 		c.push('<link rel="stylesheet" type="text/css" href="fsq/fsqStyle.css" />');
 		c.push('</head><body>');
@@ -82,6 +83,31 @@ function getContent(urlObj, res){
 process.on('uncaughtException', function (err) {
   console.log('   ***ProcessUncExc ' + err);
 });
+
+
+DNode(function (client) {
+    
+    this.timesTen = function (n,f) { f(n * 10) };
+    
+    
+    
+    
+    
+    this.whoAmI = function (reply) {
+        client.name(function (name) {
+            reply(name
+                .replace(/Mr\.?/,'Mister')
+                .replace(/Ms\.?/,'Miss')
+                .replace(/Mrs\.?/,'Misses')
+            );
+        })
+    };
+}).listen({
+    protocol : 'socket.io',
+    server : httpServer,
+    transports : 'websocket xhr-multipart xhr-polling htmlfile'.split(/\s+/),
+}).listen(6060);
+
 
 function getFileObject(folder, callBack){
 	//take folder path and return object containing all avail info on its contents

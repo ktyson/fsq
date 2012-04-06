@@ -1,0 +1,225 @@
+<html>
+<head>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+<script>
+
+$(document).ready(function(){
+
+	var c = [];		
+	c.push("<svg xmlns='http://www.w3.org/2000/svg' version='1.1'>");
+	
+
+	c.push("<g transform='scale(3) translate(100,100)'>");		
+		c.push(getSurface("flat"));	
+	c.push("</g>");
+	
+	c.push("<g transform='scale(3) translate(120,110)'>");		
+		c.push(getSurface("flat"));	
+	c.push("</g>");
+	
+	c.push("<g transform='scale(3) translate(80,110)'>");		
+		c.push(getSurface("flat"));	
+	c.push("</g>");	
+
+	c.push("<g transform='scale(3) translate(100,120)'>");		
+		c.push(getSurface("flat"));	
+	c.push("</g>");		
+	
+	
+	c.push("<g transform='scale(3) translate(120,70)'>");		
+		c.push(getSurface("rightwall"));	
+	c.push("</g>");
+	
+	c.push("<g transform='scale(3) translate(140,80)'>");		
+		c.push(getSurface("rightwall"));	
+	c.push("</g>");
+	
+	c.push("<g transform='scale(3) translate(120,50)'>");		
+		c.push(getSurface("rightwall"));	
+	c.push("</g>");
+	
+	
+	
+	c.push("<g transform='scale(3) translate(80,70)'>");		
+		c.push(getSurface("leftwall"));	
+	c.push("</g>");
+
+	c.push("<g transform='scale(3) translate(60,80)'>");		
+		c.push(getSurface("leftwall"));	
+	c.push("</g>");
+
+	/*
+	c.push("<g transform='translate(80,90)'>");
+	c.push(getLine(50,50,70,60));
+	c.push(getLine(70,60,50,70));
+	c.push(getLine(50,70,30,60));
+	c.push(getLine(30,60,50,50));
+	c.push("</g>");
+	
+	c.push("<g transform='translate(60,80)'>");
+	c.push(getLine(50,50,70,60));
+	c.push(getLine(70,60,50,70));
+	c.push(getLine(50,70,30,60));
+	c.push(getLine(30,60,50,50));
+	c.push("</g>");
+	*/
+	
+	c.push("</svg>");		
+	
+	$("body").append(c.join(''));
+});
+
+
+function getSurface(type){
+
+	var ptpairs = [];
+	
+	switch(type){
+		
+		case "flat":
+		
+			ptpairs.push([0,10]);
+			ptpairs.push([20,0]);
+			ptpairs.push([40,10]);
+			ptpairs.push([20,20]);
+			ptpairs.push([0,10]);
+			
+			return getPoly(ptpairs, "rgb(255,255,0)");
+		
+		
+		break;
+		
+		case "rightwall":
+
+			
+			ptpairs.push([20,20]);
+			ptpairs.push([0,10]);
+			ptpairs.push([0,30]);
+			ptpairs.push([20,40]);
+			ptpairs.push([20,20]);
+			
+			return getPoly(ptpairs, "rgb(200,200,0)");
+		
+		break;
+		
+		case "leftwall":
+			
+			ptpairs.push([40,10]);
+			ptpairs.push([20,20]);
+			ptpairs.push([20,40]);
+			ptpairs.push([40,30]);
+			ptpairs.push([40,10]);
+			
+			return getPoly(ptpairs, "rgb(150,150,0)");
+				
+		
+		break;
+		default:
+
+	}
+	
+	return c.join('');
+
+}
+
+
+
+function getBlock(type){
+	var c = [];
+	
+	switch(type){
+		case "full":
+			c.push(getLine(0,10,20,0));
+			c.push(getLine(20,0,40,10));
+			c.push(getLine(40,10,20,20));
+			c.push(getLine(20,20,0,10));
+			
+			c.push(getLine(0,10,0,30));
+			c.push(getLine(0,30,20,40));
+			c.push(getLine(20,40,20,20));
+			
+			c.push(getLine(20,40,40,30));
+			c.push(getLine(40,30,40,10));
+		break;
+		
+		case "floor":
+		
+			c.push(getLine(0,10,20,0));
+			c.push(getLine(20,0,40,10));
+			c.push(getLine(40,10,20,20));
+			c.push(getLine(20,20,0,10));				
+		
+		
+		break;
+		
+		case "rightwall":
+
+			c.push(getLine(20,20,0,10));
+			
+			c.push(getLine(0,10,0,30));
+			c.push(getLine(0,30,20,40));
+			c.push(getLine(20,40,20,20));		
+		
+		break;
+		
+		case "leftwall":
+		
+			c.push(getLine(40,10,20,20));
+			c.push(getLine(20,40,20,20));
+			
+			c.push(getLine(20,40,40,30));
+			c.push(getLine(40,30,40,10));		
+		
+		break;
+		default:
+			c.push(getLine(0,10,20,0));
+			c.push(getLine(20,0,40,10));
+			c.push(getLine(40,10,20,20));
+			c.push(getLine(20,20,0,10));
+			
+			c.push(getLine(0,10,0,30));
+			c.push(getLine(0,30,20,40));
+			c.push(getLine(20,40,20,20));
+			
+			c.push(getLine(20,40,40,30));
+			c.push(getLine(40,30,40,10));
+		
+	
+	}
+	
+	return c.join('');
+
+}
+
+function getLine(x1,y1,x2,y2){
+
+	return '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" style="stroke: black;"/>'
+
+}
+
+function getPoly(pointpairs, color){
+
+	var c =  [];
+	c.push('<polygon points="');
+	
+	for(var x = 0; x < pointpairs.length; x++){
+//console.log(pointpairs[x][0] + "," + pointpairs[x][1] + " ");
+		c.push(pointpairs[x][0] + "," + pointpairs[x][1] + " ");
+	
+	}
+	
+	c.push('" style="stroke:transparent; fill: ' + color + ';"/>');
+	return c.join('');
+
+}
+
+
+		
+</script>
+
+</head>
+<body>
+
+</body>
+</html>
