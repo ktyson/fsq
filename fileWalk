@@ -1,0 +1,265 @@
+var fs = require('fs');
+var path = require('path');
+
+//process.env.HOME
+//var start = '/Projects_Karl/TDSAdmin/src/java/com/bombardier/client/assets';
+var start = '/Users/k0150488/nodespace/fileTrawl/temp_folders';
+
+
+var mainObj = {};
+mainObj.objArray = [];
+
+//parallel loop - not in order but fast
+/*
+var walkParallel = function(dir, done) {
+  var results = [];
+  fs.readdir(dir, function(err, list) {
+    if (err) return done(err);
+    var pending = list.length;
+    if (!pending) return done(null, results);
+    list.forEach(function(file) {
+       
+      file = path.resolve(dir, file);
+
+
+      fs.stat(file, function(err, stat) {
+        if (stat && stat.isDirectory()) {
+          walkParallel(file, function(err, res) {
+            results = results.concat(res);
+            if (!--pending) done(null, results);
+          });
+        } else {
+          
+          //fs.stat(file, function(err, stat) {
+            var obj = {};
+            
+            
+
+            getClasses(file, function(arrC, arrM, arrP){
+
+              obj.fileName = path.basename(file, path.extname(file));
+              obj.extName = path.extname(file);
+              
+              obj.dirName = path.dirname(file);
+
+              obj.extendList = arrX;
+              obj.classList = arrC;
+              obj.propList = arrP;
+              obj.methodList = arrM;
+              
+
+              mainObj.objArray.push(obj);
+
+            });
+
+            
+          //});
+
+
+
+          //results.push(file);
+
+
+
+          if (!--pending) done(null, results);
+        }
+      });
+    });
+  });
+};
+
+*/
+//JAVA
+function getClasses(fileName, callback) {
+
+  var arrClasses = [];
+  var arrMethods = [];
+  var arrProps = [];
+  var arrImps = [];
+  var pkg = "";
+  
+  fs.readFile(fileName, "utf8", function (err, data) {
+
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
+
+    var regexClasses = /(public|private|protected)(.*)class/ig;    
+    var regexMethods = /(public|private|protected)(.*)\((.*)\)/ig; 
+    var regexProps = /(public|private|protected)/ig;
+    var regexImports = /(\s*)import/i;
+    var regexPkg  = /(\s*)package/i;
+
+    
+
+
+
+    lineArr = data.trim().split("\n");
+
+
+    var rowNum = 1;
+    lineArr.forEach(function (line) {
+
+     if(line.match(regexClasses)) {
+        arrClasses.push(rowNum + ': ' + cleanUp(line));
+      } else if(line.match(regexMethods)) {
+        arrMethods.push(rowNum + ':' + cleanUp(line));
+      } else if(line.match(regexProps)) {
+        arrProps.push(rowNum + ':' + cleanUp(line));
+      } else if(line.match(regexImports)) {
+        arrImps.push(rowNum + ': ' + cleanUp(line));
+      } else if(line.match(regexPkg)) {
+        pkg = (rowNum + ': ' + cleanUp(line));
+      }
+
+      rowNum++;
+
+    });
+
+    
+
+    callback(arrClasses, arrMethods, arrProps, arrImps, pkg);
+  });
+
+  function cleanUp(lineIn) {
+
+    return lineIn.replace(/    /g, ' ').replace("\r","").replace(";","");
+
+  }
+  
+
+}
+
+//VB
+function getClassesVB(fileName, callback) {
+
+  var arrClasses = [];
+  var arrMethods = [];
+  var arrProps = [];
+  var arrImps = [];
+  var pkg = "";
+  
+  fs.readFile(fileName, "utf8", function (err, data) {
+
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
+
+    var regexClasses = /(public|private|protected)(.*)class/ig;    
+    var regexMethods = /^(Function(.*)\((.*)\)|Sub(.*)\((.*)\))/; 
+    var regexProps = /^xyz$/i;
+    var regexImports = /^xyz$/i;
+    var regexPkg  = /^xyz$/i;
+
+    
+
+
+
+    lineArr = data.trim().split("\n");
+
+
+    var rowNum = 1;
+    lineArr.forEach(function (line) {
+
+     if(line.match(regexClasses)) {
+        arrClasses.push(rowNum + ': ' + cleanUp(line));
+      } else if(line.match(regexMethods)) {
+        arrMethods.push(rowNum + ':' + cleanUp(line));
+      } else if(line.match(regexProps)) {
+        arrProps.push(rowNum + ':' + cleanUp(line));
+      } else if(line.match(regexImports)) {
+        arrImps.push(rowNum + ': ' + cleanUp(line));
+      } else if(line.match(regexPkg)) {
+        pkg = (rowNum + ': ' + cleanUp(line));
+      }
+
+      rowNum++;
+
+    });
+
+    
+
+    callback(arrClasses, arrMethods, arrProps, arrImps, pkg);
+  });
+
+  function cleanUp(lineIn) {
+
+    return lineIn.replace(/    /g, ' ').replace("\r","").replace(";","");
+
+  }
+  
+
+}
+
+
+
+
+//serial loop - in order but slow
+
+
+var walkSerial = function(dir, done) {
+  var results = [];
+  fs.readdir(dir, function(err, list) {
+    if (err) return done(err);
+    var i = 0;
+    (function next() {
+      var file = list[i++];
+      if (!file) return done(null, results);
+      
+      file = path.resolve(dir, file);
+
+      fs.stat(file, function(err, stat) {
+        if (stat && stat.isDirectory()) {
+          walkSerial(file, function(err, res) {
+            results = results.concat(res);
+            next();
+          });
+        } else {
+
+            var obj = {};  
+
+            getClassesVB(file,  function(arrC, arrM, arrP, arrI, pkg){
+
+
+              obj.extName = path.extname(file);
+              obj.fileName = path.basename(file, path.extname(file));
+              obj.dirName = path.dirname(file);
+              obj.pkgName = pkg;
+              obj.importsList = arrI;
+              obj.classList = arrC;
+              obj.methodList = arrM;
+              obj.propList = arrP;
+
+              mainObj.objArray.push(obj);
+
+              next();
+
+
+            });
+          
+        }
+      });
+    })();
+  });
+};
+
+
+
+walkSerial(start, function(err, results) {
+  if (err) throw err;
+
+  var strResult = JSON.stringify(mainObj, null, 2);
+  console.log(strResult);
+
+  fs.writeFile('uml_schema.js', strResult, function (err) {
+    if (err) throw err;
+    console.log('It\'s saved!');
+  });
+
+
+
+});
+
+
